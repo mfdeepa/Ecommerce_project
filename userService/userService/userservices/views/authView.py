@@ -6,13 +6,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from userservices.exceptions.userAlreadyExitsException import UserAlreadyExitsException
-from userservices.exceptions.userDoesNotExistException import UserDoesNotExistException
 from userservices.serializer.loginRequestSerializer import LoginRequestSerializer
 from userservices.serializer.logoutRequestSerializer import LogoutRequestSerializer
 from userservices.serializer.signUpRequestSerializer import SignUpRequestSerializer
 from userservices.serializer.userSerializer import UserSerializer
 from userservices.serializer.validateTokenRequestSerializer import ValidateTokenRequestSerializer
 from userservices.services.authService import AuthService
+from rest_framework.permissions import IsAuthenticated
 
 
 class AuthView(APIView):
@@ -31,12 +31,13 @@ class AuthView(APIView):
                 return Response({"error": "Wrong password or failed to create session."},
                                 status=status.HTTP_404_NOT_FOUND)
 
-            user, token = login_result
+            user, refresh_token = login_result
             user_serializer = UserSerializer(user)  # Ensure to serialize the user instance
 
             response_data = {
                 'user': user_serializer.data,  # Use .data to get serialized data
-                'AUTH_TOKEN': token
+                'refresh': str(refresh_token),
+                'access': str(refresh_token.access_token),
             }
 
             return Response(response_data, status=status.HTTP_200_OK)

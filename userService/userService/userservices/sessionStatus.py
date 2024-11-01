@@ -2,7 +2,8 @@ from enum import Enum
 
 
 class SessionStatus(Enum):
-    ACTIVE = 'ACTIVE'
-    EXPIRED = 'EXPIRED'
-    LOGGED_OUT = 'LOGGED_OUT'
-    INVALID = 'INVALID'
+    Active = 'Active'
+    Expired = 'Expired'
+    Locked_out = 'Locked_out'
+    Invalid = "Invalid"
+

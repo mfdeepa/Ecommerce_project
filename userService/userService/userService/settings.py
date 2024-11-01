@@ -24,6 +24,8 @@ SECRET_KEY = "django-insecure-b8g&mzecy*%zk#-r#)3q#2q^0a=3i9n%m&d^6um$z^4g(kmd*+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# CLIENT_ID = os.getenv("ID")
+# CLIENT_SECRET = os.getenv("SECRET")
 
 ALLOWED_HOSTS = []
 
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "oauth2_provider",
+    "corsheaders",
 
 ]
 
@@ -62,6 +65,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "oauth2_provider.middleware.OAuth2TokenMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "userService.urls"
@@ -145,7 +150,14 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# settings.py
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CSRF_COOKIE_SECURE = False
+CORS_ALLOWED_ALLOWED_ORIGINS = True
+
 
 from datetime import timedelta
 
@@ -156,9 +168,11 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-# OAUTH2_PROVIDER = {
-#     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,  # 1 hour
-#     'REFRESH_TOKEN_EXPIRE_SECONDS': 86400,  # 1 day
-#     'ALLOW_GRANT_TYPES': ['password', 'authorization_code', 'refresh_token'],
-#     'AUTHORIZATION_CODE_EXPIRE_SECONDS': 300,
-# }
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,  # 1 hour
+    'REFRESH_TOKEN_EXPIRE_SECONDS': 86400,  # 1 day
+    'ALLOW_GRANT_TYPES': ['password', 'authorization_code', 'refresh_token'],
+    'AUTHORIZATION_CODE_EXPIRE_SECONDS': 300,
+}

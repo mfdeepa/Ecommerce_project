@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework import views
 
 from userservices.views.authView import AuthView
 from userservices.views.roleView import RoleViewSet
@@ -12,7 +11,7 @@ urlpatterns = [
     path('roles', RoleViewSet.as_view(), name='roles'),
 
     path('auth/login', AuthView.as_view(), name='login'),
-    path('auth/logout', AuthView.as_view(),name='logout'),
+    path('auth/logout', AuthView.as_view(), name='logout'),
     path('auth/signup', AuthView.as_view(), name='signup'),
     path('auth/validate', AuthView.as_view(), name='validate'),
 ]
