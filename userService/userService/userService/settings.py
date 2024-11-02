@@ -27,6 +27,9 @@ DEBUG = True
 # CLIENT_ID = os.getenv("ID")
 # CLIENT_SECRET = os.getenv("SECRET")
 
+CLIENT_ID = "W9bjparRDywtbWnjXXcQn4IAo7kjHwwlh5bNbJsw"
+CLIENT_SECRET = "secret"
+
 ALLOWED_HOSTS = []
 
 
@@ -175,4 +178,18 @@ OAUTH2_PROVIDER = {
     'REFRESH_TOKEN_EXPIRE_SECONDS': 86400,  # 1 day
     'ALLOW_GRANT_TYPES': ['password', 'authorization_code', 'refresh_token'],
     'AUTHORIZATION_CODE_EXPIRE_SECONDS': 300,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
 }

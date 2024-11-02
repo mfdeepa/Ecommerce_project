@@ -13,15 +13,17 @@ from userservices.serializer.userSerializer import UserSerializer
 from userservices.serializer.validateTokenRequestSerializer import ValidateTokenRequestSerializer
 from userservices.services.authService import AuthService
 from rest_framework.permissions import IsAuthenticated
-
+import logging
 
 class AuthView(APIView):
     auth_service = AuthService()
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
+    logger = logging.getLogger(__name__)
 
     @csrf_exempt
     def post(self, request):
         if 'login' in request.path:
+            print(self.logger.debug(f"Login attempt for: {request.data.get('email')}"))
             serializer = LoginRequestSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             login_result = self.auth_service.login(serializer.validated_data['email'],
