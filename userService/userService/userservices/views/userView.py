@@ -1,16 +1,18 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView
 
 from userservices.serializer.roleSerializer import RoleSerializer
 from userservices.serializer.userSerializer import UserSerializer
 from userservices.services.userService import UserService
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 
 
 class UserView(ListCreateAPIView):
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
     user_service = UserService()
 
     @csrf_exempt

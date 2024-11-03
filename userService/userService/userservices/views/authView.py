@@ -1,5 +1,6 @@
 from django.views.decorators.csrf import csrf_exempt
 from injector import inject
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -15,9 +16,11 @@ from userservices.services.authService import AuthService
 from rest_framework.permissions import IsAuthenticated
 import logging
 
+
 class AuthView(APIView):
     auth_service = AuthService()
     # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
     logger = logging.getLogger(__name__)
 
     @csrf_exempt

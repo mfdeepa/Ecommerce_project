@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -61,15 +61,15 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "oauth2_provider.middleware.OAuth2TokenMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "userService.urls"
@@ -160,6 +160,7 @@ PASSWORD_HASHERS = [
 CORS_ORIGIN_ALLOW_ALL = True
 CSRF_COOKIE_SECURE = False
 CORS_ALLOWED_ALLOWED_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 
 from datetime import timedelta
@@ -171,6 +172,24 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+# OAUTH2_PROVIDER = {
+#     "SCOPES": {
+#         "read": "Read scope",
+#         "write": "Write scope",
+#     },
+#     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,  # 1 hour
+#     "REFRESH_TOKEN_EXPIRE_SECONDS": 86400,  # 1 day
+#     "OAUTH2_BACKEND_CLASS": "oauth2_provider.oauth2_backends.JSONOAuthLibCore",
+#     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
+#     # Explicitly define allowed grant types
+#     "OAUTH2_PROVIDER_GRANT_MODEL": "oauth2_provider.models.Grant",
+#     "ALLOWED_GRANTS": [
+#         "password",
+#         "refresh_token",
+#         "authorization-code",
+#         "client-credentials",
+#     ]
+# }
 
 OAUTH2_PROVIDER = {
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},

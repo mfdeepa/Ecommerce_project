@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from oauth2_provider.views import TokenView
 
 from userService.view import home_view
+import oauth2_provider.views as oauth2_views
 
 urlpatterns = [
     # path('', home_view, name='home'),
@@ -30,6 +31,7 @@ urlpatterns = [
 
     path("", include("userservices.urls")),
     path("o/", include("oauth2_provider.urls")),
-    path('o/token/', csrf_exempt(TokenView.as_view()))
+    # path('o/token/', csrf_exempt(TokenView.as_view()))
+    # path('o/token/', csrf_exempt(oauth2_views.TokenView.as_view()))
 
 ]
