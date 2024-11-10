@@ -131,25 +131,20 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Razorpay configuration
-# RAZORPAY_KEY_ID = 'your_razorpay_key_id'
-# RAZORPAY_KEY_SECRET = 'your_razorpay_key_secret'
-#
 # Stripe configuration
-STRIPE_SECRET_KEY = "secret_key"
+STRIPE_SECRET_KEY = ''
+STRIPE_WEBHOOK_SECRET_KEY = ''
 
-
-# PAYMENT_VARIANTS: dict[str, tuple[str, dict]] = {
-#     "default": ("payments.dummy.DummyProvider", {})
-# }
-
+# razorpay configration
+RAZORPAY_ID = ''
+RAZORPAY_SECRET = ''
 
 PAYMENT_VARIANTS = {
-    # 'razorpay': {
-    #     'provider': 'razorpay',
-    #     'key_id': RAZORPAY_KEY_ID,
-    #     'key_secret': RAZORPAY_KEY_SECRET,
-    # },
+    'razorpay': {
+        'provider': 'razorpay',
+        'key_id': RAZORPAY_ID,
+        'key_secret': RAZORPAY_SECRET,
+    },
     'stripe': {
         'provider': 'stripe',
         # 'public_key': STRIPE_PUBLIC_KEY,

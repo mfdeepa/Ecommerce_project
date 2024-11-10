@@ -10,12 +10,11 @@ class PaymentGatewayStrategy:
     stripe_payment_gateway = StripePaymentGateway()
 
     def get_payment_gateway(self):
-        # payment_list = ["RazorpayPayment", "StripePayment"]
-        #
+        payment_list = ["RazorpayPayment", "StripePayment"]
+
         # # Randomly selecting a payment gateway
-        # random_choice = random.choice(payment_list)
-        #
-        # if random_choice == "StripePayment":
-        #     return self.stripe_payment_gateway
-        # return self.razorpay_payment_gateway
-        return self.stripe_payment_gateway
+        random_choice = random.choice(payment_list)
+
+        if random_choice == "StripePayment":
+            return self.stripe_payment_gateway
+        return self.razorpay_payment_gateway

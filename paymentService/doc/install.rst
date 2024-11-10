@@ -65,4 +65,9 @@ PAYMENT_VARIANTS = {
 2. install rest framework -> pip install djangorestframework
     and add the application into INSTALLED_APPS["rest_framework"]
 
-3.
+ => Razor pay Gateway
+    1. Install razorpay -> pip install razorpay
+    2. In setting write id and secret
+
+=> to download pkg_resources -> install setuptools -> commend is pip install setuptools
+

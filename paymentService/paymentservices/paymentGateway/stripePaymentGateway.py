@@ -1,5 +1,4 @@
 import stripe
-from stripe import PaymentLink, StripeError
 
 from paymentService import settings
 from paymentservices.paymentGateway.paymentGateway import PaymentGateway
@@ -8,8 +7,9 @@ from paymentservices.paymentGateway.paymentGateway import PaymentGateway
 class StripePaymentGateway(PaymentGateway):
     def __init__(self):
         self.stripe_key = settings.STRIPE_SECRET_KEY
+        self.stripe_webhook_key = settings.STRIPE_WEBHOOK_SECRET_KEY
 
-    def create_payment_link(self, price):
+    def create_payment_link(self, amount, user_name, user_email, user_mobile, order_id):
         stripe.api_key = self.stripe_key
 
         product = stripe.Product.create(
@@ -19,8 +19,8 @@ class StripePaymentGateway(PaymentGateway):
         )
         # Create the price
         price_obj = stripe.Price.create(
-            unit_amount=price,
-            currency="inr",
+            unit_amount=amount,
+            currency="INR",
             product=product.id,
         )
 
@@ -37,7 +37,6 @@ class StripePaymentGateway(PaymentGateway):
                 phone_number_collection={"enabled": False}
             )
             return payment_link.url
-
 
         except Exception as e:
             # Handle errors (e.g., connection issues, invalid parameters)
