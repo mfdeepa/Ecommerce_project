@@ -18,7 +18,7 @@ class FakeStoreClient:
         self.fake_store_product_serializer = FakeStoreProductSerializer()
 
     def get_all_products(self) -> List[FakeStoreProductSerializer]:
-        response = self.client.get(f"{"https://fakestoreapi.com"}/products")  # this will give me JSON response
+        response = self.client.get(f"https://fakestoreapi.com/products")  # this will give me JSON response
         response.raise_for_status()
         product_data = response.json()  # convert JSON into an object
         return product_data
@@ -47,7 +47,7 @@ class FakeStoreClient:
             return None
 
     def add_new_product(self, product: ProductSerializer) -> FakeStoreProductSerializer:
-        response = self.client.post(f"{"https://fakestoreapi.com"}/products", json=product)
+        response = self.client.post(f"https://fakestoreapi.com/products", json=product)
         response.raise_for_status()
         product_data = response.json()  # convert JSON into an object
         return product_data
@@ -59,19 +59,19 @@ class FakeStoreClient:
             "description": product.get('description', ''),
             "price": product.get('price', 0),
         }
-        response = self.client.patch(f"{"https://fakestoreapi.com"}/products/{product_id}", json=product_data)
+        response = self.client.patch(f"https://fakestoreapi.com/products/{product_id}", json=product_data)
 
         response.raise_for_status()
         product_data = response.json()
         return product_data
 
     def delete_product(self, product_id: int) -> None:
-        response = self.client.delete(f"{"https://fakestoreapi.com"}/products/{product_id}")
+        response = self.client.delete(f"https://fakestoreapi.com/products/{product_id}")
         response.raise_for_status()
         return None
 
     def get_limit_product_result(self) -> List[FakeStoreProductSerializer]:
-        response = self.client.get(f"{"https://fakestoreapi.com"}/products")
+        response = self.client.get(f"https://fakestoreapi.com/products")
         response.raise_for_status()
         product_data = response.json()
         return product_data

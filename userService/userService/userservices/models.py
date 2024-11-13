@@ -35,7 +35,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ["email"]
 
     def __str__(self):
-        return self.username
+        return self.username if self.username else f"User-{self.id}"
 
 
 class Session(Basemodel):
