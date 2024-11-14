@@ -83,7 +83,7 @@ class AuthView(APIView):
         elif 'validate' in request.path:
             serializer = ValidateTokenRequestSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            user = self.auth_service.validate(serializer.validated_data['token'], serializer.validated_data['user_id'])
+            user = self.auth_service.validate(serializer.validated_data['token'], serializer.validated_data['email'])
             if user is None:
                 response_data = {"session_status": "INVALID"}
             else:

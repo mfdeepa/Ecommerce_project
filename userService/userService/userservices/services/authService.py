@@ -38,7 +38,7 @@ class AuthService:
             print(user.password)
             return None
 
-        refresh_token = RefreshToken.for_user(user)     #generated jwt token
+        refresh_token = RefreshToken.for_user(user)  #generated jwt token
         # token = ''.join(choices(string.ascii_letters + string.digits, k=20))  #generated random token
 
         try:
@@ -83,7 +83,7 @@ class AuthService:
     #     session_optional.save()
     #     return session_optional
 
-    def logout(self, token: str, user_id: str):    # if we want to logout through user_id then use it.
+    def logout(self, token: str, user_id: str):  # if we want to logout through user_id then use it.
         session_optional = Session.objects.filter(token=token, user_id=user_id).first()
         if session_optional is None:
             return None
@@ -92,17 +92,35 @@ class AuthService:
         session_optional.save()
         return session_optional
 
-    def validate(self, token: str, user_id: str):
-        session_optional = Session.objects.filter(token=token, user_id=user_id).first()
+    def validate(self, token: str, email: str):
+        session_optional = Session.objects.filter(token=token, user__email=email).first()
 
         if session_optional is None:
             return None
         print(session_optional.session_status)
-        if session_optional.session_status != SessionStatus.Active.Active.value:
+        if session_optional.session_status != SessionStatus.Active.value:
             print("session is not active")
             return None
 
-        user = User.objects.get(id=user_id)
+        # user = User.objects.get(id=email)
+        user = session_optional.user
         print(user)
         userSerializer = UserSerializer(instance=user)
         return userSerializer
+
+    """" this below validate method is used for validate token with user_id """
+
+    # def validate(self, token: str, user_id: str):
+    #     session_optional = Session.objects.filter(token=token, user_id=user_id).first()
+    #
+    #     if session_optional is None:
+    #         return None
+    #     print(session_optional.session_status)
+    #     if session_optional.session_status != SessionStatus.Active.Active.value:
+    #         print("session is not active")
+    #         return None
+    #
+    #     user = User.objects.get(id=user_id)
+    #     print(user)
+    #     userSerializer = UserSerializer(instance=user)
+    #     return userSerializer
