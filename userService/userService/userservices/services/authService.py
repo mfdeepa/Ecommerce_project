@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from userservices.exceptions.userDoesNotExistException import UserDoesNotExistException
 from userservices.manager.sessionManager import SessionManager
 from userservices.manager.userManager import UserManager
-from userservices.models import User, Session
+from userservices.models import User, Session, Role
 from userservices.serializer.userSerializer import UserSerializer
 from userservices.sessionStatus import SessionStatus
 from userservices.utils import generate_code_verifier_and_challenge
@@ -26,7 +26,10 @@ class AuthService:
         self.session_manager = SessionManager()
 
     def login(self, email: str, password: str):
-        user = User.objects.filter(email=email).first()
+        # user = User.objects.filter(email=email).first()
+        user = User.objects.filter(email=email).prefetch_related('roles').first()
+        if user:
+            print(f"Roles for {user.email}: {user.roles.all()}")
         if not user:
             raise UserDoesNotExistException(f"User with email: {email}, doesn't exist.")
 
@@ -48,9 +51,11 @@ class AuthService:
         except Exception as e:
             print(f"Session creation failed: {e}")
             return None
-        return user, refresh_token
+        user_data = UserSerializer(user).data
+        print("user data", user_data)
+        return user_data, refresh_token
 
-    def signup(self, email: str, password: str) -> User:
+    def signup(self, email: str, password: str, role) -> User:
         user = User.objects.filter(email=email).first()
         if user is not None:
             raise UserDoesNotExistException(f"User with email: {email}, already exist.")
@@ -58,6 +63,12 @@ class AuthService:
         user = User(email=email, password=make_password(password))
 
         user.save()
+        role_instance = Role.objects.get(name=role)
+        user.roles.add(role_instance)
+
+        # user.roles.set([role_instance])  # Assuming 'roles' is a ManyToManyField
+        user.save()
+
         return user
 
     # def logout(self, token: str, email: str):     # use when we want to logout via email.

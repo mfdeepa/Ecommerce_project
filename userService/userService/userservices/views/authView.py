@@ -26,26 +26,41 @@ class AuthView(APIView):
     @csrf_exempt
     def post(self, request):
         if 'login' in request.path:
-            print(self.logger.debug(f"Login attempt for: {request.data.get('email')}"))
-            serializer = LoginRequestSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            login_result = self.auth_service.login(serializer.validated_data['email'],
-                                                   serializer.validated_data['password'])
-            print(login_result)
-            if login_result is None:
-                return Response({"error": "Wrong password or failed to create session."},
-                                status=status.HTTP_404_NOT_FOUND)
+            try:
+                self.logger.debug(f"Login attempt for: {request.data.get('email')}")
+                serializer = LoginRequestSerializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
 
-            user, refresh_token = login_result
-            user_serializer = UserSerializer(user)  # Ensure to serialize the user instance
+                login_result = self.auth_service.login(
+                    serializer.validated_data['email'],
+                    serializer.validated_data['password']
+                )
 
-            response_data = {
-                'user': user_serializer.data,  # Use .data to get serialized data
-                'refresh': str(refresh_token),
-                'access': str(refresh_token.access_token),
-            }
+                if login_result is None:
+                    return Response(
+                        {"error": "Wrong password or failed to create session."},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
 
-            return Response(response_data, status=status.HTTP_200_OK)
+                user, refresh_token = login_result
+
+                response_data = {
+                    'user': {
+                        'email': user['email'],
+                        'roles': user['roles']
+                    },
+                    'refresh': str(refresh_token),
+                    'access': str(refresh_token.access_token),
+                }
+
+                return Response(response_data, status=status.HTTP_200_OK)
+
+            except Exception as e:
+                self.logger.error(f"Login error: {str(e)}")
+                return Response(
+                    {"error": str(e)},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
 
         elif 'logout' in request.path:
             serializer = LogoutRequestSerializer(data=request.data)
@@ -58,7 +73,8 @@ class AuthView(APIView):
             serializer.is_valid(raise_exception=True)
             try:
                 user = self.auth_service.signup(serializer.validated_data['email'],
-                                                serializer.validated_data['password'])
+                                                serializer.validated_data['password'],
+                                                serializer.validated_data['role'])
                 return Response(UserSerializer(user).data,
                                 status=status.HTTP_201_CREATED)  # Response with serialized user data
             except UserAlreadyExitsException:

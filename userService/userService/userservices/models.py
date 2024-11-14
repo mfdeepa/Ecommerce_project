@@ -7,12 +7,19 @@ from userservices.sessionStatus import SessionStatus
 class Basemodel(models.Model):
     id = models.AutoField(primary_key=True)
 
+
     class Meta:
         abstract = True
 
 
 class Role(Basemodel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        db_table = 'roles'
+
+    def __str__(self):
+        return self.name
 
 
 class User(AbstractUser):
