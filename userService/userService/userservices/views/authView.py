@@ -20,8 +20,18 @@ import logging
 class AuthView(APIView):
     auth_service = AuthService()
     # permission_classes = [AllowAny]
-    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
+    # permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
     logger = logging.getLogger(__name__)
+
+    def get_permissions(self):
+        """
+        Customize permissions based on the request path.
+        """
+        if 'validate' in self.request.path:
+            # Allow any user to access login and validate methods.
+            return [AllowAny()]
+        # For all other methods, enforce authentication.
+        return [IsAuthenticated(), TokenHasReadWriteScope()]
 
     @csrf_exempt
     def post(self, request):

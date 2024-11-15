@@ -3,7 +3,6 @@ from functools import wraps
 import injector
 from rest_framework import generics, status
 from rest_framework.mixins import CreateModelMixin
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from productService.adapter.permission.roleBasedPermission import RoleBasedPermission
