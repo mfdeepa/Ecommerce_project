@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "oauth2_provider",
     "rest_framework_simplejwt",
-    "corsheaders",
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -52,10 +52,11 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',  # Default to requiring authentication
+        'rest_framework.permissions.AllowAny',
     ),
 }
 
-AUTH_SERVICE_URL = 'http://localhost:8050'
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -146,16 +147,18 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8050",  # Auth service URL
-    "http://localhost:8000",
-]
-
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
+# AUTH_SERVICE_URL = 'http://localhost:8050'
+#
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8050",  # Auth service URL
+#     "http://localhost:8000",
+# ]
+#
+# CORS_ALLOW_METHODS = [
+#     'DELETE',
+#     'GET',
+#     'OPTIONS',
+#     'PATCH',
+#     'POST',
+#     'PUT',
+# ]

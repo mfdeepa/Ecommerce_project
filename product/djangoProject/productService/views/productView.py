@@ -1,7 +1,12 @@
-from rest_framework import generics
+from functools import wraps
+
+import injector
+from rest_framework import generics, status
 from rest_framework.mixins import CreateModelMixin
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from productService.adapter.permission.roleBasedPermission import RoleBasedPermission
 from productService.models import Product
 from productService.seralizers.productSerializer import ProductSerializer
 from productService.services.productServiceImpl import ProductServiceImpl
@@ -9,6 +14,7 @@ from productService.services.productServiceImpl import ProductServiceImpl
 
 class ProductRetrieveUpdateDestroyAPIView(CreateModelMixin, generics.RetrieveUpdateDestroyAPIView):
     product_ser = ProductServiceImpl()
+    permission_classes = [RoleBasedPermission]
 
     def get(self, request, *args, **kwargs):
         products = self.product_ser.get_all_products()
