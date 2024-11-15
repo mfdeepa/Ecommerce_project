@@ -66,11 +66,11 @@ class AuthService:
         role_instance = Role.objects.get(name=role)
         user.roles.add(role_instance)
 
-        # user.roles.set([role_instance])  # Assuming 'roles' is a ManyToManyField
         user.save()
 
         return user
 
+    """"
     # def logout(self, token: str, email: str):     # use when we want to logout via email.
     #     user = User.objects.filter(email=email).first()
     #     if not user:
@@ -78,12 +78,14 @@ class AuthService:
     #     session_optional = Session.objects.filter(token=token, user=user).first()
     #     if session_optional is None:
     #         return None
-    #
+    # 
     #     session_optional.session_status = "Logged out"
     #     session_optional.save()
     #     return session_optional
+    """
 
-    def logout(self, token: str, user_id: str):  # if we want to logout through user_id then use it.
+    """  if we want to logout through user_id then use it. """
+    def logout(self, token: str, user_id: str):
         session_optional = Session.objects.filter(token=token, user_id=user_id).first()
         if session_optional is None:
             return None
@@ -108,7 +110,7 @@ class AuthService:
         userSerializer = UserSerializer(instance=user)
         return userSerializer
 
-    """" this below validate method is used for validate token with user_id """
+    """" this below validate method is used for validate token with user_id
 
     # def validate(self, token: str, user_id: str):
     #     session_optional = Session.objects.filter(token=token, user_id=user_id).first()
@@ -124,3 +126,5 @@ class AuthService:
     #     print(user)
     #     userSerializer = UserSerializer(instance=user)
     #     return userSerializer
+
+    """

@@ -1,5 +1,4 @@
 from django.views.decorators.csrf import csrf_exempt
-from injector import inject
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 from rest_framework import status
 from rest_framework.permissions import AllowAny
