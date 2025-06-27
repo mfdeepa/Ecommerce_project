@@ -26,7 +26,6 @@ class AuthService:
         self.session_manager = SessionManager()
 
     def login(self, email: str, password: str):
-        # user = User.objects.filter(email=email).first()
         user = User.objects.filter(email=email).prefetch_related('roles').first()
         if user:
             print(f"Roles for {user.email}: {user.roles.all()}")
@@ -38,12 +37,12 @@ class AuthService:
             print(user.password)
             return None
 
-        refresh_token = RefreshToken.for_user(user)  #generated jwt token
+        refresh_token = RefreshToken.for_user(user)                     # generated jwt token
         # token = ''.join(choices(string.ascii_letters + string.digits, k=20))  #generated random token
 
         try:
             session = Session.objects.create(
-                user=user,  # Ensure this is a User instance
+                user=user,                              # Ensure this is a User instance
                 token=refresh_token,
                 session_status="Active",
                 expiring_at=timezone.now() + timedelta(hours=1)

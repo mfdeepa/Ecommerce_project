@@ -10,7 +10,7 @@ def convert_fake_store_product_data_to_product(product_data: dict) -> Product:
     category_name = product_data.get('category', 'Unknown')
     category, created = Category.objects.get_or_create(name=category_name)
 
-    # Convert external API data to your Django model instance
+    # Convert external API data to Django model instance
     product = Product.objects.create(
         title=product_data['title'],
         price=product_data['price'],
@@ -21,14 +21,7 @@ def convert_fake_store_product_data_to_product(product_data: dict) -> Product:
 
 
 def convert_fake_store_category_data_to_category(category_data: dict) -> Category:
-    # category_name = category_data.get('name')
-    # category, created = Category.objects.get_or_create(name=category_name)
-    #
-    # category = Category.objects.create(
-    #     name=category_name['name'],
-    #     description=category_data['description'],
-    #     )
-    # return category
+
     if isinstance(category_data, str):
         category_name = category_data
         description = ''  # No description available if it's a string

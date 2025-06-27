@@ -18,23 +18,6 @@ class FakeStoreProductServiceImpl(ProductService):
         self.http_client = httpx.Client
         self.fake_store_client = FakeStoreClient()
 
-    # @injector.inject
-    # def convert_fake_store_product_data_to_product(self, product_data: dict) -> Product:
-    #     if product_data is None:
-    #         print("Received None for product_data")
-    #         raise ValidationError("Product data is invalid")
-    #     category_name = product_data.get('category', 'Unknown')
-    #     category, created = Category.objects.get_or_create(name=category_name)
-    #
-    #     # Convert external API data to your Django model instance
-    #     product = Product.objects.create(
-    #         title=product_data['title'],
-    #         price=product_data['price'],
-    #         description=product_data.get('description', ''),
-    #         category=category,
-    #     )
-    #     return product
-
     def get_all_products(self) -> List[Product]:
         # Get product data from the external API
         fake_store_products = self.fake_store_client.get_all_products()
