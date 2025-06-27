@@ -7,7 +7,6 @@ from userservices.sessionStatus import SessionStatus
 class Basemodel(models.Model):
     id = models.AutoField(primary_key=True)
 
-
     class Meta:
         abstract = True
 
@@ -23,7 +22,6 @@ class Role(Basemodel):
 
 
 class User(AbstractUser):
-    # name = models.CharField(max_length=255)
     username = models.CharField(max_length=150, unique=True, null=True, blank=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)

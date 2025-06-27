@@ -49,7 +49,7 @@ class FakeStoreProductRetrieveUpdateDestroyAPIView(CreateModelMixin, generics.Re
         if delete_products:
             return Response("Product deleted successfully.")
         elif isinstance(delete_products, Product):
-            # If you want to return the deleted product data, ensure the product object is serialized
+            # If we want to return the deleted product data, ensure the product object is serialized
             serialized_product = ProductSerializer(delete_products).data
             return Response(serialized_product, status=200)
         else:
