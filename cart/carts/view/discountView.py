@@ -3,71 +3,63 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
+
 from carts.models import Cart, Discount, CartItem
-from carts.view.cartView import CartViewSet
+from carts.services.cart_service import get_or_create_cart
+from carts.services.user_validation import UserAuthValidator
 
 
-class CartDiscountViewSet(viewsets.ModelViewSet):
-    cart_view = CartViewSet()
-    # ... existing code ...
+class CartDiscountViewSet(viewsets.ViewSet):
+    def get_user_id_from_token(self, request):
+        token = request.headers.get("Authorization", "").replace("Bearer ", "")
+        user_data = UserAuthValidator.validate_token(token)
+        return user_data.get("user_id")
 
-    @action(detail=True, methods=['post'], url_path='apply-discount')
-    def apply_discount(self, request, cart_id=None):
-        """
-        Apply discount to a specific product in the cart based on:
-        - Fixed discount
-        - Percentage discount
-        - Coupon code discount
-        - Defaults to 0 if no discount is applied
-        """
-        cart = self.cart_view.get_cart(cart_id)  # Retrieve the cart by ID
+    @action(detail=False, methods=['post'], url_path='apply-discount')
+    def apply_discount(self, request):
+
+        user_id = self.get_user_id_from_token(request)
+        cart = get_or_create_cart(user_id=user_id)
+
         product_id = request.data.get('product_id')
-        discount_code = request.data.get('discount_code')
-        fixed_discount_amount = request.data.get('fixed_discount_amount', Decimal('0.00'))
-        percentage_discount = request.data.get('percentage_discount', 0)
+        if not product_id:
+            return Response({"error": "product_id is required"}, status=400)
 
-        # Retrieve the product's CartItem from the cart
         cart_item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
-        original_price = cart_item.get_subtotal()  # Total price of the product in cart
+        original_price = cart_item.get_subtotal()
 
-        # Initialize discount amount
-        discount_amount = Decimal('0.00')
+        fixed_discount_amount = Decimal(request.data.get('fixed_discount_amount', '0.00'))
+        fixed_discount_value = min(fixed_discount_amount, original_price)
 
-        # 1. Apply fixed discount if provided
-        if fixed_discount_amount:
-            discount_amount += min(fixed_discount_amount, original_price)
+        try:
+            percentage_discount = Decimal(request.data.get('percentage_discount', '0.00'))
+        except:
+            percentage_discount = Decimal('0.00')
 
-        # 2. Apply percentage discount if provided
-        if percentage_discount > 0:
-            discount_amount += (original_price * Decimal(percentage_discount)) / 100
+        percentage_discount_value = (original_price * percentage_discount) / 100 if percentage_discount > 0 else Decimal('0.00')
 
-        # 3. Apply additional discount if a valid coupon code is provided
+        discount_code = request.data.get('discount_code')
+        coupon_discount_value = Decimal('0.00')
+
         if discount_code:
             try:
                 discount = Discount.objects.get(code=discount_code)
                 if discount.is_valid(original_price):
-                    # Check discount type for coupon and apply accordingly
-                    if discount.discount_type == 'percentage':
-                        discount_amount += (original_price * discount.value) / 100
-                    elif discount.discount_type == 'fixed':
-                        discount_amount += min(discount.value, original_price)
+                    coupon_discount_value = discount.calculate_discount(original_price)
+                else:
+                    return Response({'error': 'Discount code is not valid for this cart total or time window.'}, status=400)
             except Discount.DoesNotExist:
-                return Response({'error': 'Invalid discount code'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid discount code'}, status=400)
 
-        # 4. Ensure discount does not exceed the original price
-        discounted_price = max(original_price - discount_amount, Decimal('0.00'))
-
-        # Optional: Update CartItem with discounted price (assuming a `discounted_price` field exists)
-        cart_item.discounted_price = discounted_price
-        cart_item.save()
+        total_discount = fixed_discount_value + percentage_discount_value + coupon_discount_value
+        final_price = max(original_price - total_discount, Decimal('0.00'))
 
         return Response({
-            'product_id': product_id,
-            'original_price': str(original_price),
-            'fixed_discount': str(fixed_discount_amount),
-            'percentage_discount': str(percentage_discount),
-            'coupon_discount': str(
-                discount_amount - fixed_discount_amount - (original_price * Decimal(percentage_discount) / 100)),
-            'total_discount': str(discount_amount),
-            'discounted_price': str(discounted_price)
-        }, status=status.HTTP_200_OK)
+            "product_id": product_id,
+            "original_price": str(original_price),
+            "fixed_discount": str(fixed_discount_value),
+            "percentage_discount": str(percentage_discount_value),
+            "coupon_discount": str(coupon_discount_value),
+            "total_discount": str(total_discount),
+            "final_price": str(final_price)
+        }, status=200)

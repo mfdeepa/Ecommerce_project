@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,8 +29,8 @@ DEBUG = True
 # CLIENT_ID = os.getenv("ID")
 # CLIENT_SECRET = os.getenv("SECRET")
 
-CLIENT_ID = "W9bjparRDywtbWnjXXcQn4IAo7kjHwwlh5bNbJsw"
-CLIENT_SECRET = "secret"
+# CLIENT_ID = "W9bjparRDywtbWnjXXcQn4IAo7kjHwwlh5bNbJsw"
+# CLIENT_SECRET = "secret"
 
 ALLOWED_HOSTS = []
 
@@ -93,19 +95,22 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "userService.wsgi.application"
+AUTH_USER_MODEL = 'userservices.User'
+
+# OAUTH2_PROVIDER_APPLICATION_MODEL = 'userservices.CustomApplication'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "userserviceproject",
-        "USER": 'root',
-        "PASSWORD": 'Deepa@123',
-        "HOST": '127.0.0.1',
-        "PORT": '3306',
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
@@ -145,12 +150,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),  # Adjust this path as needed
-# ]
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -158,10 +157,13 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 CSRF_COOKIE_SECURE = False
-CORS_ALLOWED_ALLOWED_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:63342",
+    "http://127.0.0.1:63342",
+]
 
 
 from datetime import timedelta
@@ -173,28 +175,10 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-# OAUTH2_PROVIDER = {
-#     "SCOPES": {
-#         "read": "Read scope",
-#         "write": "Write scope",
-#     },
-#     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,  # 1 hour
-#     "REFRESH_TOKEN_EXPIRE_SECONDS": 86400,  # 1 day
-#     "OAUTH2_BACKEND_CLASS": "oauth2_provider.oauth2_backends.JSONOAuthLibCore",
-#     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
-#     # Explicitly define allowed grant types
-#     "OAUTH2_PROVIDER_GRANT_MODEL": "oauth2_provider.models.Grant",
-#     "ALLOWED_GRANTS": [
-#         "password",
-#         "refresh_token",
-#         "authorization-code",
-#         "client-credentials",
-#     ]
-# }
 
 OAUTH2_PROVIDER = {
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
-    'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,  # 1 hour
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 86600,  # 1 hour
     'REFRESH_TOKEN_EXPIRE_SECONDS': 86400,  # 1 day
     'ALLOW_GRANT_TYPES': ['password', 'authorization_code', 'refresh_token'],
     'AUTHORIZATION_CODE_EXPIRE_SECONDS': 300,
@@ -212,4 +196,6 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'DEBUG',
     },
+
+
 }

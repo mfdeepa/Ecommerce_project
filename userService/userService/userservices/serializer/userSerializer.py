@@ -5,7 +5,7 @@ from userservices.models import Role, User
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
-    roles = serializers.SlugRelatedField(  # represent data into a list
+    roles = serializers.SlugRelatedField(
         many=True,
         slug_field='name',
         queryset=Role.objects.all(),
@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'roles', 'password']
         extra_kwargs = {
-            'password': {'write_only': True}  # Don't send password in responses
+            'password': {'write_only': True}
         }
 
     def create(self, validated_data):

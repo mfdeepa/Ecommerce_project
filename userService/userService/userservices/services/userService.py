@@ -1,7 +1,6 @@
 from typing import Optional, List
 
 from django.http import Http404
-# from injector import injector,inject
 from injector import Injector, inject
 
 from userservices.manager.roleManager import RoleManager
@@ -31,15 +30,6 @@ class UserService:
             return user
         except User.DoesNotExist:
             raise Http404("Product does not exist")
-
-    # def set_user_roles(self, userId, role_ids: List[int]):
-    #     user = User.objects.filter(id=userId).first()
-    #     if user is None:
-    #         return None, None
-    #
-    #     roles = Role.objects.filter(id__in=role_ids)
-    #     user.roles.set(roles)
-    #     return user, list[roles]
 
     def set_user_roles(self, userId, role_ids: List[int]):
         user = User.objects.filter(id=userId).first()

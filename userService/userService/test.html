@@ -47,8 +47,8 @@
     <div class="popup" id="loginPopup">
         <h2>Login to OAuth2</h2>
         <form id="loginForm" onsubmit="return false;">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br><br>
+            <label for="username">username:</label>
+            <input type="text" id="username" name="username" required><br><br>
 
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br><br>
@@ -73,17 +73,17 @@
 
         // Login function to handle OAuth2 token request
         function login() {
-            var email = document.getElementById("email").value;
+            var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:8050/o/token/", true);
+            xhr.open("POST", "http://localhost:8001/o/token/", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
             // Use your OAuth2 Client ID and Secret here
-            var client_id = "W9bjparRDywtbWnjXXcQn4IAo7kjHwwlh5bNbJsw";
-            var client_secret = "secret";
-            var params = "grant_type=password&username=" + email + "&password=" + password +
+            var client_id = "G1iDZC610FkLOoa2UqTOlb6A8bzBsFGISNbTwoQv";
+            var client_secret = "your_fixed_client_secret";
+            var params = "grant_type=password&username=" + username + "&password=" + password +
                 "&client_id=" + client_id + "&client_secret=" + client_secret;
 
             xhr.onreadystatechange = function () {

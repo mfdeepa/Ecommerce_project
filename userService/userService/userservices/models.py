@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.db import models
-
 from userservices.sessionStatus import SessionStatus
+from oauth2_provider.models import AbstractApplication
+from django.db import models
+
+from django.core.validators import RegexValidator
 
 
 class Basemodel(models.Model):
@@ -25,15 +28,28 @@ class User(AbstractUser):
     username = models.CharField(max_length=150, unique=True, null=True, blank=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
+    phone_validator = RegexValidator(
+        regex=r'^\d{10}$',
+        message="Phone number must be exactly 10 digits."
+    )
+
+    phone_number = models.CharField(
+        max_length=10,
+        validators=[phone_validator],
+        verbose_name="Customer Phone Number",
+        null=True,
+        blank=True,
+    )
+
     roles = models.ManyToManyField(Role, blank=True)
     groups = models.ManyToManyField(
         Group,
-        related_name="custom_user_set",  # New related name for groups
+        related_name="custom_user_set",
         blank=True
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name="custom_user_permissions_set",  # New related name for permissions
+        related_name="custom_user_permissions_set",
         blank=True
     )
     USERNAME_FIELD = "username"
@@ -52,3 +68,6 @@ class Session(Basemodel):
         choices=[(status.value[0], status.value[1]) for status in SessionStatus],
         default=SessionStatus.Active.value[0]
     )
+
+
+

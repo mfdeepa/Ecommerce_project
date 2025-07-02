@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class SessionStatus(Enum):
     Active = 'Active'
     Expired = 'Expired'

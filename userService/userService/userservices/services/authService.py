@@ -1,6 +1,4 @@
-import string
 from datetime import timedelta
-from random import choices
 
 from django.utils import timezone
 from injector import inject
@@ -37,12 +35,11 @@ class AuthService:
             print(user.password)
             return None
 
-        refresh_token = RefreshToken.for_user(user)                     # generated jwt token
-        # token = ''.join(choices(string.ascii_letters + string.digits, k=20))  #generated random token
+        refresh_token = RefreshToken.for_user(user)
 
         try:
             session = Session.objects.create(
-                user=user,                              # Ensure this is a User instance
+                user=user,
                 token=refresh_token,
                 session_status="Active",
                 expiring_at=timezone.now() + timedelta(hours=1)
@@ -103,7 +100,6 @@ class AuthService:
             print("session is not active")
             return None
 
-        # user = User.objects.get(id=email)
         user = session_optional.user
         print(user)
         userSerializer = UserSerializer(instance=user)

@@ -23,13 +23,9 @@ class AuthView(APIView):
     logger = logging.getLogger(__name__)
 
     def get_permissions(self):
-        """
-        Customize permissions based on the request path.
-        """
+
         if 'validate' in self.request.path:
-            # Allow any user to access login and validate methods.
             return [AllowAny()]
-        # For all other methods, enforce authentication.
         return [IsAuthenticated(), TokenHasReadWriteScope()]
 
     @csrf_exempt
@@ -74,7 +70,8 @@ class AuthView(APIView):
         elif 'logout' in request.path:
             serializer = LogoutRequestSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            self.auth_service.logout(serializer.validated_data['token'], serializer.validated_data['email'])
+            self.auth_service.logout(serializer.validated_data['token'], serializer.validated_data['user_id'])
+
             return Response(status=status.HTTP_200_OK)
 
         elif 'signup' in request.path:
@@ -103,3 +100,17 @@ class AuthView(APIView):
             return Response(response_data, status=status.HTTP_200_OK)
 
         return Response({"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# this is added for checking the access token instead of refresh token in product service
+# class ValidateTokenView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def get(self, request):
+#         user = request.user
+#         return Response({
+#             "id": user.id,
+#             "email": user.email,
+#             "roles": list(user.roles.values_list('role', flat=True))
+#         }, status=200)
+#
