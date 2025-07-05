@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / compiled files
+*.pyc
+__pycache__/
+*.o
+*.rej
+
+# Virtual environment
+env/
+venv/
+.env/
+.venv/
+
+# Database
+db.sqlite3
+*.sqlite3
+
+# Media and static files (if not managed by a separate service)
+media/
+static/
+
+# Django-specific files
+local_settings.py
+*.log
+*.pot
+
+# IDE-specific files (e.g., VS Code, PyCharm)
+.idea/
+.vscode/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Specific paths based on your project structure
+# These ensure any 'integrationService/' or 'product/djangoProject/' specific
+# .gitignore rules that might apply to the root are covered.
+# For example, if there were .env files directly inside these subdirectories
+# that weren't already caught by the general patterns.
+
+# If any sub-service has a 'db.sqlite3' directly in its root (e.g., cart/db.sqlite3)
+# the general rule 'db.sqlite3' will catch it.
